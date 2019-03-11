@@ -1,0 +1,240 @@
+<?php
+defined('BASEPATH') OR exit('No direct script access allowed');
+
+class Student_model extends CI_Model {
+   public function __construct()
+    {
+           parent::__construct();
+           // Your own constructor code
+    }
+
+   public function new_student() 
+     {
+    		
+			$enrollement = $this->input->post('enrollement');
+			$aadhar = $this->input->post('aadhar');
+			$sname = $this->input->post('sname');
+			
+			$fname = $this->input->post('fname');
+			$caste_name = $this->input->post('caste_name');
+			$dob = $this->input->post('dob');
+			
+			$address = $this->input->post('address');
+			$mobile = $this->input->post('mobile');
+			$email = $this->input->post('email');
+			
+			$course_name = $this->input->post('course_name');
+			$course_fee = $this->input->post('course_fee');
+			$course_tax = $this->input->post('tax');
+			
+			$course_duration = $this->input->post('course_duration');
+			$discount = $this->input->post('discount');
+			$join_date = $this->input->post('join_date');
+			
+			$remark = $this->input->post('remark');
+      	$dd = date('Y-m-d h:i:s');
+      	
+   		$data = array(
+    			  'enrollment ' => $enrollement,
+    			  'aadhar_no' => $aadhar,
+    			  'student_name' => $sname,
+    			  
+   			  'father_name' => $fname,
+    			  'caste' => $caste_name,
+    			  'dob' => $dob,
+    			  'address' => $address,
+    			  'phone' => $mobile,
+    			  'email' => $email,
+ 				  
+    			  'course_code '=> $course_name,
+    			  'course_fee  '=> $course_fee,
+    			  'tax_amount' => $course_tax,
+    			  'tax' => 18,
+    			  'course_duration  '=> $course_duration,
+    			  'course_discount' => $discount,
+    			  'join_date' => $join_date,
+    			  'remark' => $remark,
+     			  'create_date' => $dd,
+     			  'modify_date'=>$dd
+			);
+
+			$this->db->insert('student', $data);
+			//echo $this->db->last_query(); exit; 
+			if($this->db->trans_status()==true) 
+		   	{
+					return true;
+				}
+			else 
+				{
+					return false;
+				}
+	  }
+	  public function edit_student() 
+     {
+    		$enrollement = $this->input->post('enrollement');
+			$aadhar = $this->input->post('aadhar');
+			$sname = $this->input->post('sname');
+			
+			$fname = $this->input->post('fname');
+			$caste_name = $this->input->post('caste_name');
+			$dob = $this->input->post('dob');
+			
+			$address = $this->input->post('address');
+			$mobile = $this->input->post('mobile');
+			$email = $this->input->post('email');
+			
+			$course_name = $this->input->post('course_name');
+			$course_fee = $this->input->post('course_fee');
+			$course_tax = $this->input->post('tax');
+			
+			$course_duration = $this->input->post('course_duration');
+			$discount = $this->input->post('discount');
+			$join_date = $this->input->post('join_date');
+			
+			$remark = $this->input->post('remark');
+      	$dd = date('Y-m-d h:i:s');
+      	$student_id = $this->input->post('student_id');
+      	
+   		$data = array(
+    			  'enrollment ' => $enrollement,
+    			  'aadhar_no' => $aadhar,
+    			  'student_name' => $sname,
+    			  
+   			  'father_name' => $fname,
+    			  'caste' => $caste_name,
+    			  'dob' => $dob,
+    			  'address' => $address,
+    			  'phone' => $mobile,
+    			  'email' => $email,
+ 				  
+    			  'course_code '=> $course_name,
+    			  'course_fee  '=> $course_fee,
+    			  'tax_amount' => $course_tax,
+    			  'course_duration  '=> $course_duration,
+    			  'course_discount' => $discount,
+    			  'join_date' => $join_date,
+    			  'remark' => $remark,
+     			  'modify_date'=>$dd
+			);
+
+			$this->db->where('id', $student_id);
+			$this->db->update('student', $data);
+			//echo $this->db->last_query(); exit; 
+			if($this->db->trans_status()==true) 
+		   	{
+					return true;
+				}
+			else 
+				{
+					return false;
+				}
+	  }
+ 
+  public function all_students()
+	{
+		$result=array();
+		$this->db->order_by("id", "DESC");
+		$query = $this->db->get('student');
+		foreach ($query->result_array() as $row)
+		{
+        $result[]=$row;
+		}
+		return $result;
+	}
+	public function view_student($cid)
+	{
+		$result=array();
+		$query = $this->db->get_where('student', array('id' => $cid));
+		//echo $this->db->last_query(); exit;
+		foreach ($query->result_array() as $row)
+		{
+       	return $row;
+		}	
+	}
+	
+	public function ajax_load_course($coure_code)
+	{
+		$result=array();
+		$query = $this->db->get_where('courses', array('course_code' => $coure_code));
+		foreach ($query->result_array() as $row)
+		{
+       	return $row;
+		}
+		return $result;
+	}
+	
+	public function view_student_by_enroll($enrollement)
+	{
+		$result=array();
+		$query = $this->db->get_where('student', array('enrollment' => $enrollement));
+		//echo $this->db->last_query(); exit;
+		foreach ($query->result_array() as $row)
+		{
+       	return $row;
+		}	
+	}
+	
+	
+	public function student_fee($enrollement)
+	{
+		$result=array();
+		$this->db->order_by("id", "DESC");
+		$query = $this->db->get_where('fee', array('enrollment' => $enrollement));
+		foreach ($query->result_array() as $row)
+		{
+        $result[]=$row;
+		}
+		return $result;
+	}
+	public function amount_deposited($enrollement)
+	{
+		$amount_deposit = 0;
+		$query = $this->db->get_where('fee', array('enrollment' => $enrollement));
+		foreach ($query->result_array() as $row)
+		{
+        $result[]=$row;
+        $amount_deposit = $amount_deposit + $row['amount'];
+		}
+		return $amount_deposit;
+	}
+	
+	public function add_fee()
+	{
+		 	$enrollment = $this->input->post('enrollement');
+			$amount_add = $this->input->post('amount_add');
+			$remark = $this->input->post('remark');
+			$due_date = $this->input->post('due_date');
+      	$dd = date('Y-m-d');
+      	
+   		$data = array(
+    			  'enrollment' => $enrollment,
+    			  'amount' => $amount_add,
+    			  'remark' => $remark,
+    			  'due_date' => $due_date,
+    			  'deposite_date' => $dd
+			);
+
+			$this->db->insert('fee', $data);
+			//echo $this->db->last_query(); exit; 
+			if($this->db->trans_status()==true) 
+		   	{
+					return true;
+				}
+			else 
+				{
+					return false;
+				}	
+	}
+	
+	public function fee_receipt($receipt_id)
+	{
+		$result=array();
+		$query = $this->db->get_where('fee', array('id' => $receipt_id));
+		//echo $this->db->last_query(); exit;
+		foreach ($query->result_array() as $row)
+		{
+       	return $row;
+		}	
+	}
+
+}
